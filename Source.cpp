@@ -246,5 +246,6 @@ MatrixGraph& MatrixGraph::operator=(class ListGraph& oth)
 
 int main(int, char**)
 {
+
 	return 0;
 }
