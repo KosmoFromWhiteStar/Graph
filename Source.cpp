@@ -43,7 +43,6 @@ public:
 	MatrixGraph(MatrixGraph* _oth) {
 		matrix = _oth->matrix;
 	};
-	MatrixGraph(class ListGraph& oth) {};
 	MatrixGraph(IGraph* obj) {};
 
 	MatrixGraph& operator=(const MatrixGraph& oth)
@@ -52,6 +51,10 @@ public:
 	}
 	MatrixGraph& operator=(class ListGraph& oth);
 
+	std::vector<std::vector <int>> get_vec() const 
+	{
+		return matrix;
+	}
 
 	void AddEdge(int from, int to) override
 	{
@@ -123,17 +126,13 @@ public:
 			}
 		}
 	}
+
 	
+
 	~MatrixGraph() {	};
 };
 
 
-
-/// <summary>
-/// Õ≈ Œ–»≈Õ“»–Œ¬¿Õ€… À»—“ √–¿‘
-/// »—œ–¿¬»“‹
-/// !!!
-/// </summary>
 class ListGraph : public IGraph
 {
 private:
@@ -150,7 +149,25 @@ public:
 	{
 		list = _oth->list;
 	}
+	ListGraph(IGraph* _oth)
+	{
+		
+	}
 	~ListGraph() {	 };
+
+	ListGraph& operator=(const MatrixGraph& anoth)
+	{
+		const std::vector<std::vector <int>> another_vec = anoth.get_vec();
+		list.resize(another_vec.size());
+		for (int i = 0; i < another_vec.size(); i++)
+		{
+			for (int j = 0; j < another_vec[i].size(); j++)
+			{
+				if (another_vec[i][j] < 0) list[i].push_back(another_vec[i][j]);
+			}
+		}
+		return *this;
+	}
 
 	void AddEdge(int from, int to) override
 	{
@@ -169,15 +186,6 @@ public:
 					list[from].push_back(to);
 				}
 			}
-			//add Edge To[V] - FROM[V]
-			for (int i = 0; i < list[to].size(); i++)
-			{
-				if (list[to][i] == from)
-				{
-					list[to].push_back(from);
-				}
-			}
-
 			return;
 		}
 
@@ -187,9 +195,9 @@ public:
 			list.resize(from);
 		}
 		list[from].push_back(to);
-		if (to > list.size())
+		if (to > list[from].size())
 		{
-			list.resize(to);
+			list[from].resize(to);
 		}
 		list[to].push_back(from);
 	}
@@ -211,7 +219,19 @@ public:
 
 	void GetPrevVertices(int vertex, std::vector<int>& vertices) const override
 	{
-		GetNextVertices(vertex, vertices);
+		for (int i = 0; i < list.size(); i++)
+		{
+			for (int j = 0; j < list[i].size(); j++)
+			{
+				if (vertex == list[i][j])
+				{
+					vertices.push_back(i);
+					break;
+				}
+			}
+
+		}
+		
 	}
 
 	std::vector<std::vector<int>> get_list() const 
